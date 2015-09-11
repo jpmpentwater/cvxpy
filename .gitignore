@@ -41,6 +41,7 @@ nosetests.xml
 # virtualenv
 env
 env_*
+venv/*
 
 # pycharm
 .idea
