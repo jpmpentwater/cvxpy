@@ -118,36 +118,36 @@ class SymData(object):
         bool
             Is the problem infeasible?
         """
-        # Remove redundant constraints.
-        for key, constraints in constr_map.items():
-            uniq_constr = unique(constraints,
-                                 key=lambda c: c.constr_id)
-            constr_map[key] = list(uniq_constr)
+        # # Remove redundant constraints.
+        # for key, constraints in constr_map.items():
+        #     uniq_constr = unique(constraints,
+        #                          key=lambda c: c.constr_id)
+        #     constr_map[key] = list(uniq_constr)
 
-        # If there are no constraints, the problem is unbounded
-        # if any of the coefficients are non-zero.
-        # If all the coefficients are zero then return the constant term
-        # and set all variables to 0.
-        if not any(constr_map.values()):
-            str(objective) # TODO
+        # # If there are no constraints, the problem is unbounded
+        # # if any of the coefficients are non-zero.
+        # # If all the coefficients are zero then return the constant term
+        # # and set all variables to 0.
+        # if not any(constr_map.values()):
+        #     str(objective) # TODO
 
-        # Remove constraints with no variables or parameters.
-        for key in [s.EQ, s.LEQ]:
-            new_constraints = []
-            for constr in constr_map[key]:
-                vars_ = lu.get_expr_vars(constr.expr)
-                if len(vars_) == 0 and not lu.get_expr_params(constr.expr):
-                    coeff = op2mat.get_constant_coeff(constr.expr)
-                    sign = intf.sign(coeff)
-                    # For equality constraint, coeff must be zero.
-                    # For inequality (i.e. <= 0) constraint,
-                    # coeff must be negative.
-                    if key == s.EQ and not sign.is_zero() or \
-                        key == s.LEQ and not sign.is_negative():
-                        return s.INFEASIBLE
-                else:
-                    new_constraints.append(constr)
-            constr_map[key] = new_constraints
+        # # Remove constraints with no variables or parameters.
+        # for key in [s.EQ, s.LEQ]:
+        #     new_constraints = []
+        #     for constr in constr_map[key]:
+        #         vars_ = lu.get_expr_vars(constr.expr)
+        #         if len(vars_) == 0 and not lu.get_expr_params(constr.expr):
+        #             coeff = op2mat.get_constant_coeff(constr.expr)
+        #             sign = intf.sign(coeff)
+        #             # For equality constraint, coeff must be zero.
+        #             # For inequality (i.e. <= 0) constraint,
+        #             # coeff must be negative.
+        #             if key == s.EQ and not sign.is_zero() or \
+        #                 key == s.LEQ and not sign.is_negative():
+        #                 return s.INFEASIBLE
+        #         else:
+        #             new_constraints.append(constr)
+        #     constr_map[key] = new_constraints
 
         return None
 

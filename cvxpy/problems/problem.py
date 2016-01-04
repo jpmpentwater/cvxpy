@@ -30,6 +30,9 @@ from cvxpy.problems.problem_data.problem_data import ProblemData
 import warnings
 import numpy as np
 
+## CVXCANON ##
+import canonInterface
+
 class Problem(u.Canonical):
     """A convex optimization problem.
 
@@ -224,6 +227,10 @@ class Problem(u.Canonical):
                 raise DCPError("Problem does not follow DCP rules.")
 
         objective, constraints = self.canonicalize()
+        print 'Calling CVXcanon'
+        sense = Minimize if isinstance(self.objective, Minimize) else Maximize
+        canonInterface.solve(sense, objective, constraints, kwargs)
+
         # Choose a solver/check the chosen solver.
         if solver is None:
             solver_name = Solver.choose_solver(constraints)
