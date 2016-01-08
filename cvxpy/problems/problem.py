@@ -32,6 +32,7 @@ import numpy as np
 
 ## CVXCANON ##
 import canonInterface
+import cvxpy.lin_ops.lin_utils as lu
 
 class Problem(u.Canonical):
     """A convex optimization problem.
@@ -228,8 +229,14 @@ class Problem(u.Canonical):
 
         objective, constraints = self.canonicalize()
         print 'Calling CVXcanon'
-        sense = Minimize if isinstance(self.objective, Minimize) else Maximize
-        canonInterface.solve(sense, objective, constraints, kwargs)
+        if type(self.objective) == Minimize:
+            sense = Minimize
+            canon_objective = objective
+        else:
+            sense = Maximize
+            canon_objective = lu.neg_expr(objective)  # preserve sense
+
+        canonInterface.solve(sense, canon_objective, constraints, verbose, kwargs)
 
         # Choose a solver/check the chosen solver.
         if solver is None:
